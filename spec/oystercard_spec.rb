@@ -18,8 +18,9 @@ describe Oystercard do
   end
 
   describe '#deduct' do
-    it { is_expected.to respond_to(:deduct).with(1).argument }
-
+    #it { is_expected.to respond_to(:deduct).with(1).argument }
+    described_class.send(:public, *described_class.private_instance_methods)
+    
     it 'can deduct an amount from the balance' do
       subject.top_up(20)
       expect { subject.deduct(5) }.to change{ subject.balance }.by -5
@@ -50,6 +51,12 @@ describe Oystercard do
       subject.touch_in
       subject.touch_out
       expect(subject).not_to be_in_journey
+    end
+
+    it 'deduct the minimum charge when touch out' do
+      subject.top_up(2)
+      subject.touch_in
+      expect { subject.touch_out }.to change{ subject.balance }.by(-described_class::MINIMUM_CHARGE)
     end
   end
 end
