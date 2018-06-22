@@ -4,6 +4,7 @@ describe Oystercard do
   subject(:oystercard) { described_class.new}
   let(:entry_station) {double :station}
   let(:exit_station) {double :station}
+  let(:journey) {double :journey}
 
   Oystercard.send(:public, :deduct)
 
@@ -16,9 +17,6 @@ describe Oystercard do
     it 'has an empty list of journeys' do
       expect(oystercard.history).to be_empty
     end
-    # it 'is initially not in journey' do
-    #   expect(oystercard).not_to be_in_journey
-    # end
 
    end
 

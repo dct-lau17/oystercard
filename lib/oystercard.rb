@@ -1,4 +1,5 @@
 require './lib/journey'
+require './lib/journey_log'
 
 class Oystercard
   attr_reader :balance, :in_journey, :entry_station, :exit_station, :history
@@ -7,7 +8,7 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @history = []
+    @journeys = JourneyLog.new
   end
 
   def top_up(amount)
@@ -21,13 +22,11 @@ class Oystercard
 
   def touch_in(station = nil)
     raise "Insufficient balance to touch in" if low_balance?
-    @journey = Journey.new(station)
+    @journeys.start(station)
   end
 
   def touch_out(station = nil)
-    @journey.exit(station)
-    store_journey
-    deduct(@journey.fare)
+    deduct(@journeys.finish(station))
   end
 
   def low_balance?
@@ -38,9 +37,6 @@ class Oystercard
     amount + @balance > MAXIMUM_BALANCE
   end
 
-  def store_journey
-  @history <<  @journey.trip
-  end
 
  private
 
